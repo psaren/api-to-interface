@@ -1,10 +1,11 @@
 # api-to-interface
+
+将 yapi 接口数据转换为 typescript interface  
+
 [![NPM version](https://img.shields.io/npm/v/api-to-interface.svg)](https://npmjs.org/package/api-to-interface)
 [![NPM](https://img.shields.io/npm/l/api-to-interface)](./LECENSE)
 ![David](https://img.shields.io/david/psaren/api-to-interface)
 [![npm](https://img.shields.io/npm/dm/api-to-interface)](https://www.npmjs.com/package/api-to-interface)
-
-将 yapi 接口数据转换为 typescript interface
 
 ## install
 ``` 
