@@ -122,15 +122,15 @@ class YapiGenerator extends Generator_1.default {
     checkConfig() {
         const { url, projectId, token } = this.config;
         if (!url) {
-            consola.error(`url is required!`);
+            consola.error('url is required!');
             return false;
         }
         if (!projectId) {
-            consola.error(`projectId is required!`);
+            consola.error('projectId is required!');
             return false;
         }
         if (!token) {
-            consola.error(`token is required!`);
+            consola.error('token is required!');
             return false;
         }
         return true;

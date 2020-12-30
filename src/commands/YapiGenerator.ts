@@ -28,7 +28,7 @@ class YapiGenerator extends Generator<YapiConfig> {
     this.initRequest()
   }
 
-  public initRequest() {
+  public initRequest () {
     const atiConfigs = this.config
     const request = axios.create({
       baseURL: atiConfigs.url
@@ -51,18 +51,18 @@ class YapiGenerator extends Generator<YapiConfig> {
     return this.request
   }
 
-  public checkConfig() {
+  public checkConfig () {
     const { url, projectId, token } = this.config
     if (!url) {
-      consola.error(`url is required!`)
+      consola.error('url is required!')
       return false
     }
     if (!projectId) {
-      consola.error(`projectId is required!`)
+      consola.error('projectId is required!')
       return false
     }
     if (!token) {
-      consola.error(`token is required!`)
+      consola.error('token is required!')
       return false
     }
     return true
@@ -79,28 +79,27 @@ class YapiGenerator extends Generator<YapiConfig> {
     if (respData && respData?.res_body_is_json_schema && respData?.res_body) {
       try {
         const paths = respData?.path?.split('/')
-        const name: string = paths[paths.length-1]
+        const name: string = paths[paths.length - 1]
         const apiData = JSON.parse(respData.res_body)
         const schema = apiData?.properties?.data || apiData
         if (schema) {
           compile(schema, camelCase(name))
-          .then(ts => {
-            const outputRootPath = path.resolve(process.cwd(), `${this.config.output}`)
-            if (!fs.existsSync(outputRootPath)) {
-              fs.mkdirSync(outputRootPath)
-            }
-            const filePath = path.resolve(outputRootPath, `${paths[paths.length-2]}`)
-            if (!fs.existsSync(filePath)) {
-              fs.mkdirSync(filePath)
-            }
-            fs.writeFileSync(`${filePath}/${name}.d.ts`, ts, { encoding: 'utf8' })
-          })
+            .then(ts => {
+              const outputRootPath = path.resolve(process.cwd(), `${this.config.output}`)
+              if (!fs.existsSync(outputRootPath)) {
+                fs.mkdirSync(outputRootPath)
+              }
+              const filePath = path.resolve(outputRootPath, `${paths[paths.length - 2]}`)
+              if (!fs.existsSync(filePath)) {
+                fs.mkdirSync(filePath)
+              }
+              fs.writeFileSync(`${filePath}/${name}.d.ts`, ts, { encoding: 'utf8' })
+            })
         } else {
           consola.error(respData?.path)
           consola.info(`ignore: ${respData.res_body}`)
         }
-        
-      } catch(err) {
+      } catch (err) {
         consola.error(err)
         console.log(respData)
       }
@@ -123,9 +122,9 @@ class YapiGenerator extends Generator<YapiConfig> {
     await this.getGroupId()
     this.config.groupId?.forEach(async (catId) => {
       const spinner = ora(`id: ${catId} 任务开始\n`).start()
-      const resp = await this.request({ 
-        url: YapiUrls.listCat, 
-        params: { page: 1, limit: 50, catid: catId} 
+      const resp = await this.request({
+        url: YapiUrls.listCat,
+        params: { page: 1, limit: 50, catid: catId }
       })
       const list = resp?.data?.data?.list || []
       const apiList = list.map(item => {
@@ -134,19 +133,17 @@ class YapiGenerator extends Generator<YapiConfig> {
           id: item._id
         }
       })
-      
+
       if (apiList.length) {
         Promise.all(apiList.map(this.generateInterface))
-        .then(() => {
-          spinner.succeed(`id: ${catId} 任务完成`)
-        })
+          .then(() => {
+            spinner.succeed(`id: ${catId} 任务完成`)
+          })
       } else {
         spinner.stop()
       }
     })
-    
   }
-
 }
 
 export default YapiGenerator

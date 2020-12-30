@@ -1,11 +1,17 @@
-## api-to-interface
+# api-to-interface
+[![NPM version](https://img.shields.io/npm/v/api-to-interface.svg)](https://npmjs.org/package/api-to-interface)
+[![NPM](https://img.shields.io/npm/l/api-to-interface)](./LECENSE)
+![David](https://img.shields.io/david/psaren/api-to-interface)
+[![npm](https://img.shields.io/npm/dm/api-to-interface)](https://www.npmjs.com/package/api-to-interface)
+
 将 yapi 接口数据转换为 typescript interface
+
 ## install
 ``` 
 npm i api-to-interface -g
 ```
 
-### 初始化
+## 初始化
 ```
 ati init 
 ```
@@ -27,12 +33,12 @@ module.exports = {
 }
 ```
 
-### 生成 interface
+## 生成 interface
 ```
 ati run
 ```
 
-### configs
+## configs
 | 属性      | 说明               | 类型     | 默认值 |
 | --------- | ------------------ | -------- | ------ |
 | url       | yapi 项目 url      | string   |        |
