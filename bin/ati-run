@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+
+const yapi = require('../dist/commands/run').default
+
+yapi.run()

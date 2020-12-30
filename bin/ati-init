@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+
+const init = require('../dist/commands/init').default
+
+init()

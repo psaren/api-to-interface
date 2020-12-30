@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "baseUrl": ".",
+    "experimentalDecorators": true,
+    "lib": ["es2017", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "outDir": "dist/",
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "rootDir": "./src",
+    "sourceMap": false,
+    "strictNullChecks": true,
+    "target": "es2017",
+    "traceResolution": false,
+    "types" : ["node"],
+    "declaration": true
+  },
+  "include": [
+    "./src"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "name": "api-to-interface",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "ati": "bin/ati"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/psaren/api-to-interface.git"
+  },
+  "keywords": [],
+  "author": "psaren",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "camelcase": "^6.2.0",
+    "chalk": "^4.1.0",
+    "commander": "^6.2.1",
+    "consola": "^2.15.0",
+    "fs-extra": "^9.0.1",
+    "ora": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/lodash": "^4.14.166",
+    "@types/node": "^14.14.16",
+    "@typescript-eslint/eslint-plugin": "^4.11.1",
+    "@typescript-eslint/parser": "^4.11.1",
+    "eslint": "^7.16.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "json-schema-to-typescript": "^10.0.3",
+    "lodash": "^4.17.20",
+    "rimraf": "^3.0.2"
+  }
+}
