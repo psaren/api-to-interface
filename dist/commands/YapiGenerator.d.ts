@@ -16,6 +16,7 @@ declare class YapiGenerator extends Generator<YapiConfig> {
     constructor();
     initRequest(): AxiosInstance;
     checkConfig(): boolean;
+    writeInterfaceToFile(content: string, name: string, paths: string[]): void;
     generateInterface: (item: ApiItem) => Promise<void>;
     getGroupId: () => Promise<void>;
     generate: () => Promise<void>;

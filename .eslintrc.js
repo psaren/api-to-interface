@@ -20,5 +20,6 @@ module.exports = {
   ],
   rules: {
     'no-unmodified-loop-condition': 'off'
-  }
+  },
+  ignorePatterns: ['dist']
 }

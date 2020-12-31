@@ -14,7 +14,7 @@ class YapiGenerator extends Generator_1.default {
     constructor() {
         super(utils_1.getAtiConfigs({ output: 'atiOutput' }));
         this.generateInterface = async (item) => {
-            var _a, _b, _c;
+            var _a, _b, _c, _d, _e, _f, _g;
             const resp = await this.request({
                 url: dict_1.YapiUrls.apiInfo,
                 params: {
@@ -26,20 +26,25 @@ class YapiGenerator extends Generator_1.default {
                 try {
                     const paths = (_b = respData === null || respData === void 0 ? void 0 : respData.path) === null || _b === void 0 ? void 0 : _b.split('/');
                     const name = paths[paths.length - 1];
-                    const apiData = JSON.parse(respData.res_body);
-                    const schema = ((_c = apiData === null || apiData === void 0 ? void 0 : apiData.properties) === null || _c === void 0 ? void 0 : _c.data) || apiData;
-                    if (schema) {
-                        json_schema_to_typescript_1.compile(schema, camelcase_1.default(name))
+                    const resBody = JSON.parse(respData.res_body);
+                    const resSchema = ((_c = resBody === null || resBody === void 0 ? void 0 : resBody.properties) === null || _c === void 0 ? void 0 : _c.data) || resBody;
+                    if (respData.req_body_type === 'json' && respData.req_body_is_json_schema) {
+                        const reqBody = JSON.parse(respData.req_body_other);
+                        const reqSchema = ((_d = reqBody === null || reqBody === void 0 ? void 0 : reqBody.properties) === null || _d === void 0 ? void 0 : _d.data) || reqBody;
+                        const tempName = (_g = (_f = (_e = respData === null || respData === void 0 ? void 0 : respData.path) === null || _e === void 0 ? void 0 : _e.split('/')) === null || _f === void 0 ? void 0 : _f.slice(-2)) === null || _g === void 0 ? void 0 : _g.join('-');
+                        // If interface name is `title`, change the interface name
+                        if (reqSchema.title === 'title') {
+                            reqSchema.title = camelcase_1.default(tempName);
+                        }
+                        json_schema_to_typescript_1.compile(reqSchema, camelcase_1.default(tempName))
                             .then(ts => {
-                            const outputRootPath = path.resolve(process.cwd(), `${this.config.output}`);
-                            if (!fs.existsSync(outputRootPath)) {
-                                fs.mkdirSync(outputRootPath);
-                            }
-                            const filePath = path.resolve(outputRootPath, `${paths[paths.length - 2]}`);
-                            if (!fs.existsSync(filePath)) {
-                                fs.mkdirSync(filePath);
-                            }
-                            fs.writeFileSync(`${filePath}/${name}.d.ts`, ts, { encoding: 'utf8' });
+                            this.writeInterfaceToFile(ts, name, paths);
+                        });
+                    }
+                    if (resSchema) {
+                        json_schema_to_typescript_1.compile(resSchema, camelcase_1.default(name))
+                            .then(ts => {
+                            this.writeInterfaceToFile(ts, name, paths);
                         });
                     }
                     else {
@@ -134,6 +139,22 @@ class YapiGenerator extends Generator_1.default {
             return false;
         }
         return true;
+    }
+    writeInterfaceToFile(content, name, paths) {
+        const outputRootPath = path.resolve(process.cwd(), `${this.config.output}`);
+        if (!fs.existsSync(outputRootPath)) {
+            fs.mkdirSync(outputRootPath);
+        }
+        const fileDirPath = path.resolve(outputRootPath, `${paths[paths.length - 2]}`);
+        if (!fs.existsSync(fileDirPath)) {
+            fs.mkdirSync(fileDirPath);
+        }
+        const filePath = `${fileDirPath}/${name}.d.ts`;
+        let newContent = content;
+        if (fs.existsSync(filePath)) {
+            newContent = fs.readFileSync(filePath, { encoding: 'utf8' }) + `\n${content}`;
+        }
+        fs.writeFileSync(filePath, newContent, { encoding: 'utf8' });
     }
 }
 exports.default = YapiGenerator;

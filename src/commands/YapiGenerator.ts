@@ -68,6 +68,23 @@ class YapiGenerator extends Generator<YapiConfig> {
     return true
   }
 
+  writeInterfaceToFile (content: string, name: string, paths: string[]) {
+    const outputRootPath = path.resolve(process.cwd(), `${this.config.output}`)
+    if (!fs.existsSync(outputRootPath)) {
+      fs.mkdirSync(outputRootPath)
+    }
+    const fileDirPath = path.resolve(outputRootPath, `${paths[paths.length - 2]}`)
+    if (!fs.existsSync(fileDirPath)) {
+      fs.mkdirSync(fileDirPath)
+    }
+    const filePath = `${fileDirPath}/${name}.d.ts`
+    let newContent = content
+    if (fs.existsSync(filePath)) {
+      newContent = fs.readFileSync(filePath, { encoding: 'utf8' }) + `\n${content}`
+    }
+    fs.writeFileSync(filePath, newContent, { encoding: 'utf8' })
+  }
+
   generateInterface = async (item: ApiItem) => {
     const resp = await this.request({
       url: YapiUrls.apiInfo,
@@ -80,20 +97,25 @@ class YapiGenerator extends Generator<YapiConfig> {
       try {
         const paths = respData?.path?.split('/')
         const name: string = paths[paths.length - 1]
-        const apiData = JSON.parse(respData.res_body)
-        const schema = apiData?.properties?.data || apiData
-        if (schema) {
-          compile(schema, camelCase(name))
+        const resBody = JSON.parse(respData.res_body)
+        const resSchema = resBody?.properties?.data || resBody
+        if (respData.req_body_type === 'json' && respData.req_body_is_json_schema) {
+          const reqBody = JSON.parse(respData.req_body_other)
+          const reqSchema = reqBody?.properties?.data || reqBody
+          const tempName = respData?.path?.split('/')?.slice(-2)?.join('-')
+          // If interface name is `title`, change the interface name
+          if (reqSchema.title === 'title') {
+            reqSchema.title = camelCase(tempName)
+          }
+          compile(reqSchema, camelCase(tempName))
             .then(ts => {
-              const outputRootPath = path.resolve(process.cwd(), `${this.config.output}`)
-              if (!fs.existsSync(outputRootPath)) {
-                fs.mkdirSync(outputRootPath)
-              }
-              const filePath = path.resolve(outputRootPath, `${paths[paths.length - 2]}`)
-              if (!fs.existsSync(filePath)) {
-                fs.mkdirSync(filePath)
-              }
-              fs.writeFileSync(`${filePath}/${name}.d.ts`, ts, { encoding: 'utf8' })
+              this.writeInterfaceToFile(ts, name, paths)
+            })
+        }
+        if (resSchema) {
+          compile(resSchema, camelCase(name))
+            .then(ts => {
+              this.writeInterfaceToFile(ts, name, paths)
             })
         } else {
           consola.error(respData?.path)
