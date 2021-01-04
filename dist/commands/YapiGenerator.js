@@ -38,13 +38,13 @@ class YapiGenerator extends Generator_1.default {
                         }
                         json_schema_to_typescript_1.compile(reqSchema, camelcase_1.default(tempName))
                             .then(ts => {
-                            this.writeInterfaceToFile(ts, name, paths);
+                            this.writeInterfaceToFile(utils_1.parseTsCode(ts, utils_1.removeIndexSignatureMiddleWare), name, paths);
                         });
                     }
                     if (resSchema) {
                         json_schema_to_typescript_1.compile(resSchema, camelcase_1.default(name))
                             .then(ts => {
-                            this.writeInterfaceToFile(ts, name, paths);
+                            this.writeInterfaceToFile(utils_1.parseTsCode(ts, utils_1.removeIndexSignatureMiddleWare), name, paths);
                         });
                     }
                     else {

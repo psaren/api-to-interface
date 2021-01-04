@@ -1,3 +1,4 @@
+import * as ts from 'typescript';
 export declare function getRootPath(): string;
 export declare function getPkgVersion(): string;
 export declare function printPkgVersion(): void;
@@ -5,3 +6,6 @@ export declare const isObject: (arg: any) => boolean;
 export declare const isArray: (arg: any) => boolean;
 export declare const sleep: (timeout: any) => Promise<unknown>;
 export declare const getAtiConfigs: (defaultAtiConfigs?: {}) => any;
+export declare const removeIndexSignature: (members: any) => any;
+export declare const removeIndexSignatureMiddleWare: (sourceFile: ts.SourceFile) => void;
+export declare const parseTsCode: (code: string, middleWare?: ((x: any) => any) | undefined) => string;

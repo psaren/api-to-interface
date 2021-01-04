@@ -1,6 +1,6 @@
 import Generator from './Generator'
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
-import { getAtiConfigs } from '../utils'
+import { getAtiConfigs, parseTsCode, removeIndexSignatureMiddleWare } from '../utils'
 import { YapiUrls } from '../dict'
 import camelCase from 'camelcase'
 import { compile } from 'json-schema-to-typescript'
@@ -109,13 +109,13 @@ class YapiGenerator extends Generator<YapiConfig> {
           }
           compile(reqSchema, camelCase(tempName))
             .then(ts => {
-              this.writeInterfaceToFile(ts, name, paths)
+              this.writeInterfaceToFile(parseTsCode(ts, removeIndexSignatureMiddleWare), name, paths)
             })
         }
         if (resSchema) {
           compile(resSchema, camelCase(name))
             .then(ts => {
-              this.writeInterfaceToFile(ts, name, paths)
+              this.writeInterfaceToFile(parseTsCode(ts, removeIndexSignatureMiddleWare), name, paths)
             })
         } else {
           consola.error(respData?.path)

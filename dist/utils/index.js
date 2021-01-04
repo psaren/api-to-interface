@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAtiConfigs = exports.sleep = exports.isArray = exports.isObject = exports.printPkgVersion = exports.getPkgVersion = exports.getRootPath = void 0;
+exports.parseTsCode = exports.removeIndexSignatureMiddleWare = exports.removeIndexSignature = exports.getAtiConfigs = exports.sleep = exports.isArray = exports.isObject = exports.printPkgVersion = exports.getPkgVersion = exports.getRootPath = void 0;
+const ts = require("typescript");
 const path = require("path");
 const fs = require('fs-extra');
 const consola = require('consola');
@@ -36,3 +37,33 @@ const getAtiConfigs = (defaultAtiConfigs = {}) => {
     return atiConfigs;
 };
 exports.getAtiConfigs = getAtiConfigs;
+const removeIndexSignature = (members) => {
+    return members.filter((item) => {
+        var _a, _b;
+        if ((item.type.kind === 177 || item.type.kind === 178) && ((_b = (_a = item.type) === null || _a === void 0 ? void 0 : _a.elementType) === null || _b === void 0 ? void 0 : _b.members)) {
+            const temp = exports.removeIndexSignature(item.type.elementType.members);
+            item.type.elementType.members = temp;
+        }
+        return item.kind !== 171;
+    });
+};
+exports.removeIndexSignature = removeIndexSignature;
+const removeIndexSignatureMiddleWare = (sourceFile) => {
+    sourceFile.statements.forEach((item) => {
+        if (item.name.kind === 78) {
+            item.members = exports.removeIndexSignature(item.members);
+        }
+    });
+};
+exports.removeIndexSignatureMiddleWare = removeIndexSignatureMiddleWare;
+const parseTsCode = (code, middleWare) => {
+    const sourceFile = ts.createSourceFile(__filename, // fileName
+    code, // sourceText
+    ts.ScriptTarget.Latest // langugeVersion
+    );
+    if (middleWare) {
+        middleWare(sourceFile);
+    }
+    return ts.createPrinter().printFile(sourceFile);
+};
+exports.parseTsCode = parseTsCode;

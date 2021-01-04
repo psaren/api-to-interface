@@ -1,3 +1,4 @@
+import * as ts from 'typescript'
 import * as path from 'path'
 const fs = require('fs-extra')
 const consola = require('consola')
@@ -32,4 +33,34 @@ export const getAtiConfigs = (defaultAtiConfigs = {}) => {
   const userAtiConfig = require(configPath) || {}
   const atiConfigs = Object.assign({}, defaultAtiConfigs, userAtiConfig)
   return atiConfigs
+}
+
+export const removeIndexSignature = (members: any) => {
+  return members.filter((item: any) => {
+    if ((item.type.kind === 177 || item.type.kind === 178) && item.type?.elementType?.members) {
+      const temp = removeIndexSignature(item.type.elementType.members)
+      item.type.elementType.members = temp
+    }
+    return item.kind !== 171
+  })
+}
+
+export const removeIndexSignatureMiddleWare = (sourceFile: ts.SourceFile) => {
+  sourceFile.statements.forEach((item: any) => {
+    if (item.name.kind === 78) {
+      item.members = removeIndexSignature(item.members)
+    }
+  })
+}
+
+export const parseTsCode = (code: string, middleWare?: (x: any) => any) => {
+  const sourceFile = ts.createSourceFile(
+    __filename, // fileName
+    code, // sourceText
+    ts.ScriptTarget.Latest // langugeVersion
+  )
+  if (middleWare) {
+    middleWare(sourceFile)
+  }
+  return ts.createPrinter().printFile(sourceFile)
 }

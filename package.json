@@ -8,6 +8,9 @@
     "dist"
   ],
   "scripts": {
+    "dev": "tsc -w -p .",
+    "build": "rm -rf dist && tsc -p .",
+    "prepublishOnly": "yarn build",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "genlog": "conventional-changelog -p angular -i CHANGELOG.md -s"
