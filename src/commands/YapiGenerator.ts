@@ -77,7 +77,7 @@ class YapiGenerator extends Generator<YapiConfig> {
     if (!fs.existsSync(fileDirPath)) {
       fs.mkdirSync(fileDirPath)
     }
-    const filePath = `${fileDirPath}/${name}.d.ts`
+    const filePath = `${fileDirPath}/${name}.ts`
     let newContent = content
     if (fs.existsSync(filePath)) {
       newContent = fs.readFileSync(filePath, { encoding: 'utf8' }) + `\n${content}`
