@@ -55,7 +55,7 @@ export const removeIndexSignatureMiddleWare = (sourceFile: ts.SourceFile) => {
 
 export const parseTsCode = (code: string, middleWare?: (x: any) => any) => {
   const sourceFile = ts.createSourceFile(
-    __filename, // fileName
+    'ati.ts', // fileName
     code, // sourceText
     ts.ScriptTarget.Latest // langugeVersion
   )
