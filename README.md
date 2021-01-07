@@ -30,7 +30,30 @@ module.exports = {
   // interface 输出目录
   output: '',
   // 项目内的分组 id
-  groupId: []
+  groupId: [],
+  // (可选) 自定义 interface name 
+  customInterfaceName: (name, type) => {
+    if (type === 'req') {
+      return `${name}Req`
+    } else {
+      return `${name}Res`
+    }
+  }
+}
+```
+
+## API signature
+``` ts
+type CustomInterfaceName = (name: string, type: string, response: any) => string
+
+interface YapiConfig {
+  url: string
+  projectId: string
+  token: string
+  output?: string
+  groupId?: string[]
+  json2TsOptions?: Partial<Options>
+  customInterfaceName?: CustomInterfaceName
 }
 ```
 
@@ -40,10 +63,13 @@ ati run
 ```
 
 ## configs
-| 属性      | 说明               | 类型     | 默认值 |
-| --------- | ------------------ | -------- | ------ |
-| url       | yapi 项目 url      | string   |        |
-| projectId | 项目 id            | string   |        |
-| token     | yapi 项目 token    | string   |        |
-| output    | interface 输出目录 | string   |        |
-| groupId   | 项目内的分组 id    | string[] |        |
+| 属性                | 说明                 | 类型                | 默认值 |
+| ------------------- | -------------------- | ------------------- | ------ |
+| url                 | yapi 项目 url        | string              |        |
+| projectId           | 项目 id              | string              |        |
+| token               | yapi 项目 token      | string              |        |
+| output              | interface 输出目录   | string              |        |
+| groupId             | 项目内的分组 id      | string[]            |        |
+| customInterfaceName | 自定义interface name | CustomInterfaceName |        |
+
+> support customInterfaceName start at V1.0.6!
